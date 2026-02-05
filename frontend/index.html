@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FuelSplit — Carpool Wizard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- Top Nav -->
+  <header class="topbar">
+    <div class="left">
+      <button id="sidebarToggle" class="iconbtn" aria-label="Toggle sidebar">☰</button>
+      <div class="brand">
+        <div class="logo">FS</div>
+        <div class="brandText">
+          <div class="brandTitle">FuelSplit</div>
+          <div class="brandSub">Carpool fuel split — Trip 1 → Trip 2 → Result</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <a class="navlink" href="#wizard">Wizard</a>
+      <a class="navlink" href="#history">History</a>
+      <button id="darkToggle" class="iconbtn" aria-label="Toggle dark mode">🌙</button>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="sidebar">
+    <a class="sideItem" href="#wizard">🧭 <span class="lbl">Wizard</span></a>
+    <a class="sideItem" href="#history">🧾 <span class="lbl">History</span></a>
+    <div class="sideSep"></div>
+    <button id="darkToggleSide" class="sideBtn">🌙 <span class="lbl">Dark Mode</span></button>
+    <div class="sideHint">
+      <div class="muted">Tip</div>
+      <div class="small">Use “Two Trips” for drop + return or multi-leg trips.</div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Wizard -->
+    <section id="wizard" class="section">
+      <div class="sectionHead">
+        <h1>FuelSplit Wizard</h1>
+        <p class="muted">Uber-style trip cards, auto-calc, and a clean result summary.</p>
+      </div>
+
+      <!-- Progress -->
+      <div class="card glass progressCard">
+        <div class="progressTop">
+          <div class="progressTitle">Progress</div>
+          <div id="progressLabel" class="muted small">Step 1 of 4</div>
+        </div>
+
+        <div class="progressDots">
+          <div class="dot active" data-dot="1">1</div>
+          <div class="line" data-line="1"></div>
+          <div class="dot" data-dot="2">2</div>
+          <div class="line" data-line="2"></div>
+          <div class="dot" data-dot="3">3</div>
+          <div class="line" data-line="3"></div>
+          <div class="dot" data-dot="4">4</div>
+        </div>
+
+        <div class="progressNames">
+          <span>Mode</span><span>Trip 1</span><span>Trip 2</span><span>Result</span>
+        </div>
+      </div>
+
+      <div class="grid">
+        <!-- Left: Wizard Steps -->
+        <div class="card glass">
+          <!-- STEP 1 -->
+          <div class="step" data-step="1">
+            <div class="stepHead">
+              <h2>Step 1 — Mode & Fuel</h2>
+              <p class="muted small">Pick single/two trips, fuel type, and fuel rate.</p>
+            </div>
+
+            <div class="row2">
+              <div class="field">
+                <label>Trip Mode</label>
+                <select id="tripMode">
+                  <option value="single">Single Trip</option>
+                  <option value="two">Two Trips</option>
+                </select>
+                <div class="hint">Two Trips will unlock Trip 2 card in Step 3.</div>
+              </div>
+
+              <div class="field">
+                <label>Fuel Type</label>
+                <select id="fuelType">
+                  <option value="petrol">Petrol</option>
+                  <option value="diesel">Diesel</option>
+                </select>
+                <div class="hint">Diesel switches theme accent automatically.</div>
+              </div>
+            </div>
+
+            <div class="row2">
+              <div class="field">
+                <label>Fuel Rate (₹/L)</label>
+                <input id="fuelRate" type="number" step="0.1" value="110">
+                <small class="error" id="errRate"></small>
+              </div>
+
+              <div class="field">
+                <label>Quick presets</label>
+                <div class="chipRow">
+                  <button class="chip" data-rate="105" type="button">₹105</button>
+                  <button class="chip" data-rate="110" type="button">₹110</button>
+                  <button class="chip" data-rate="115" type="button">₹115</button>
+                </div>
+                <div class="hint">Tap a chip to auto-fill rate.</div>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button id="next1" class="btn primary">Next →</button>
+            </div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div class="step hidden" data-step="2">
+            <div class="tripCard">
+              <div class="tripBadge">Trip 1</div>
+              <h2>Trip 1 Details</h2>
+              <p class="muted small">Mileage & passengers can differ from Trip 2.</p>
+
+              <div class="row2">
+                <div class="field">
+                  <label>Trip 1 Mileage (km/L)</label>
+                  <input id="milage1" type="number" step="0.1" value="15">
+                  <small class="error" id="errMilage1"></small>
+                </div>
+                <div class="field">
+                  <label>Trip 1 Distance (km)</label>
+                  <input id="distance1" type="number" step="0.1" value="50">
+                  <small class="error" id="errDistance1"></small>
+                </div>
+              </div>
+
+              <div class="row2">
+                <div class="field">
+                  <label>Trip 1 Passengers (excluding driver)</label>
+                  <input id="passengers1" type="number" step="1" value="3">
+                  <small class="error" id="errPassengers1"></small>
+                </div>
+
+                <div class="field">
+                  <label>Trip 1 live preview</label>
+                  <div class="miniBox" id="miniTrip1">Enter valid values to preview.</div>
+                  <div class="hint">Auto-calculates as you type.</div>
+                </div>
+              </div>
+
+              <div class="actions">
+                <button id="back2" class="btn ghost">← Back</button>
+                <button id="next2" class="btn primary">Next →</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3 -->
+          <div class="step hidden" data-step="3">
+            <div class="tripCard">
+              <div class="tripBadge">Trip 2</div>
+              <h2>Trip 2 Details</h2>
+              <p class="muted small">Only required in “Two Trips” mode.</p>
+
+              <div class="row2">
+                <div class="field">
+                  <label>Trip 2 Mileage (km/L)</label>
+                  <input id="milage2" type="number" step="0.1" value="15">
+                  <small class="error" id="errMilage2"></small>
+                </div>
+                <div class="field">
+                  <label>Trip 2 Distance (km)</label>
+                  <input id="distance2" type="number" step="0.1" value="50">
+                  <small class="error" id="errDistance2"></small>
+                </div>
+              </div>
+
+              <div class="row2">
+                <div class="field">
+                  <label>Trip 2 Passengers (excluding driver)</label>
+                  <input id="passengers2" type="number" step="1" value="3">
+                  <small class="error" id="errPassengers2"></small>
+                </div>
+
+                <div class="field">
+                  <label>Trip 2 live preview</label>
+                  <div class="miniBox" id="miniTrip2">Enter valid values to preview.</div>
+                  <div class="hint">Auto-calculates as you type.</div>
+                </div>
+              </div>
+
+              <div class="actions">
+                <button id="back3" class="btn ghost">← Back</button>
+                <button id="next3" class="btn primary">Next →</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 4 -->
+          <div class="step hidden" data-step="4">
+            <div class="stepHead">
+              <h2>Step 4 — Result</h2>
+              <p class="muted small">Trip costs + per-person splits, plus save/share.</p>
+            </div>
+
+            <div id="toast" class="toast hidden"></div>
+
+            <div class="kpiGrid">
+              <div class="kpi">
+                <div class="kLabel">Trip 1 Cost</div>
+                <div id="kTrip1Cost" class="kVal">—</div>
+              </div>
+              <div class="kpi">
+                <div class="kLabel">Trip 2 Cost</div>
+                <div id="kTrip2Cost" class="kVal">—</div>
+              </div>
+              <div class="kpi">
+                <div class="kLabel">Total Cost</div>
+                <div id="kTotalCost" class="kVal">—</div>
+              </div>
+              <div class="kpi">
+                <div class="kLabel">Total Fuel</div>
+                <div id="kTotalFuel" class="kVal">—</div>
+              </div>
+            </div>
+
+            <!-- Animated fuel meter -->
+            <div class="meterWrap">
+              <div class="meterTop">
+                <span class="muted small">Fuel Meter</span>
+                <span id="meterLabel" class="muted small">0%</span>
+              </div>
+              <div class="meter">
+                <div id="meterBar" class="meterBar"></div>
+              </div>
+              <div class="hint">Visual scale: 10L ≈ 100% (cap).</div>
+            </div>
+
+            <div id="resultBox" class="resultBox">
+              <div class="muted">Your summary will show here.</div>
+            </div>
+
+            <div class="actions">
+              <button id="back4" class="btn ghost">← Back</button>
+              <button id="waShareBtn" class="btn whatsapp" disabled>Share WhatsApp</button>
+              <button id="saveBtn" class="btn ghost" disabled>Save</button>
+              <button id="startOver" class="btn primary">Start Over</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Live Summary Panel -->
+        <div class="card glass sticky">
+          <div class="panelTitle">Live Summary</div>
+          <div class="muted small">Updates automatically as you type.</div>
+
+          <div class="summaryBox" id="liveSummary">
+            <div class="muted">Fill inputs to see live summary.</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="panelTitle">Rules</div>
+          <ul class="rules">
+            <li>Each trip has its own mileage and passenger count.</li>
+            <li>Driver included automatically in split.</li>
+            <li>Trip 2 is optional (Two Trips mode only).</li>
+          </ul>
+
+          <button id="floatingWA" class="floatingWA" type="button">📲 Quick Share</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- History -->
+    <section id="history" class="section">
+      <div class="sectionHead">
+        <h1>History</h1>
+        <p class="muted">Saved sessions from backend (Flask + SQLite).</p>
+      </div>
+
+      <div class="card glass">
+        <div class="historyTop">
+          <button id="refreshHistoryBtn" class="btn ghost">Refresh</button>
+          <button id="clearHistoryBtn" class="btn ghost danger">Clear History</button>
+        </div>
+
+        <div id="historyList" class="historyList muted">Loading history…</div>
+      </div>
+    </section>
+
+    <footer class="footer muted small">
+      FuelSplit • built for carpool splits • local dev mode
+    </footer>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
