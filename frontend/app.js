@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const $ = (id) => document.getElementById(id);
 
   // ===== Backend API =====
-  const API_BASE = "http://127.0.0.1:5000/api/sessions";
+  const API_BASE = "https://fuelsplit-backend.onrender.com/api/sessions";
 
   async function apiGetHistory() {
     const r = await fetch(API_BASE);
