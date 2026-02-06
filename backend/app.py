@@ -6,6 +6,23 @@ from datetime import datetime
 import os
 
 app = Flask(__name__)
+from flask_cors import CORS
+
+ALLOWED_ORIGINS = [
+    "https://fuelsplit-frontend-jm50.onrender.com",
+    "http://127.0.0.1:5500",  # Live Server
+    "http://localhost:5500",  # Live Server
+    "http://127.0.0.1:3000",
+    "http://localhost:3000",
+]
+
+CORS(
+    app,
+    resources={r"/api/*": {"origins": ALLOWED_ORIGINS}},
+    supports_credentials=False,
+    methods=["GET", "POST", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type"],
+)
 
 # CORS: allow frontend to call backend APIs
 CORS(
