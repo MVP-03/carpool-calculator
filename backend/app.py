@@ -5,32 +5,30 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 from datetime import datetime
 import os
 
-app = Flask(__name__)
+from flask import Flask, request, jsonify
 from flask_cors import CORS
+import os
+
+app = Flask(__name__)
 
 ALLOWED_ORIGINS = [
     "https://fuelsplit-frontend-jm50.onrender.com",
-    "http://127.0.0.1:5500",  # Live Server
-    "http://localhost:5500",  # Live Server
-    "http://127.0.0.1:3000",
+    "http://localhost:5500",
+    "http://127.0.0.1:5500",
     "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 
 CORS(
     app,
     resources={r"/api/*": {"origins": ALLOWED_ORIGINS}},
-    supports_credentials=False,
     methods=["GET", "POST", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type"],
 )
 
-# CORS: allow frontend to call backend APIs
-CORS(
-    app,
-    resources={r"/api/*": {"origins": "*"}},
-    methods=["GET", "POST", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type"],
-)
+@app.get("/api/health")
+def health():
+    return jsonify({"ok": True})
 
 # ------------------------------------------------------------
 # Database config
