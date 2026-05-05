@@ -1,8 +1,10 @@
+
 document.addEventListener("DOMContentLoaded", () => {
   const $ = (id) => document.getElementById(id);
+  console.log("API_BASE =", API_BASE);
 
   // ===== Backend API =====
-  const API_BASE = "https://fuelsplit-backend.onrender.com/api/sessions";
+  const API_BASE = "https://carpool-calculator-1.onrender.com/api/sessions";
 
   async function apiGetHistory() {
     const r = await fetch(API_BASE);
@@ -119,6 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", () => {
       fuelRate.value = btn.getAttribute("data-rate");
       onAnyInput();
+      window.__lastResultTest = lastResult;
     });
   });
 
